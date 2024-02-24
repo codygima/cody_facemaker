@@ -3,23 +3,22 @@ package com.example.facemaker;
 import android.graphics.Color;
 import android.view.View;
 import android.widget.AdapterView;
-import android.widget.ArrayAdapter;
 import android.widget.RadioGroup;
 import android.widget.SeekBar;
-import android.widget.Spinner;
 import android.widget.TextView;
-
-import java.util.ArrayList;
 
 /***
  * @author Cody Gima
- * @version 2/14/23
+ * @version 2/24/23
  */
-public class FaceController implements SeekBar.OnSeekBarChangeListener, RadioGroup.OnCheckedChangeListener, View.OnClickListener {
+public class FaceController implements SeekBar.OnSeekBarChangeListener, RadioGroup.OnCheckedChangeListener, View.OnClickListener, AdapterView.OnItemSelectedListener {
 
+    // instance variables
     public MainActivity myActivity;
     private FaceView fv;
     private FaceModel fm;
+
+
 
     public FaceController(MainActivity activity, FaceView faceView) {
         myActivity = activity;
@@ -44,6 +43,29 @@ public class FaceController implements SeekBar.OnSeekBarChangeListener, RadioGro
         else if (seekBar.getId() == R.id.blueSeekBar) {
             blueText.setText("" + progress);
         }
+
+        //extract the red, green and blue numbers from the seekbar
+        String redNumStr = redText.getText().toString();
+        int redNum = Integer.parseInt(redNumStr);
+        String greenNumStr = greenText.getText().toString();
+        int greenNum = Integer.parseInt(greenNumStr);
+        String blueNumStr = blueText.getText().toString();
+        int blueNum = Integer.parseInt(blueNumStr);
+
+        int newColor = Color.rgb(redNum, greenNum, blueNum);
+
+        //find out which radio button is checked
+        RadioGroup rg = myActivity.findViewById(R.id.RG_Features);
+        if (rg.getCheckedRadioButtonId() == R.id.radioSkin) {
+            fm.skinColor = newColor;
+        }
+        else if (rg.getCheckedRadioButtonId() == R.id.radioEyes) {
+            fm.eyeColor = newColor;
+        }
+        else if (rg.getCheckedRadioButtonId() == R.id.radioHair) {
+            fm.hairColor = newColor;
+        }
+
         fv.invalidate();
     }
 
@@ -86,7 +108,7 @@ public class FaceController implements SeekBar.OnSeekBarChangeListener, RadioGro
         SeekBar greenSeekBar = myActivity.findViewById(R.id.greenSeekBar);
         SeekBar blueSeekBar = myActivity.findViewById(R.id.blueSeekBar);
 
-        // Update SeekBars
+        // updates the seekbar
         redSeekBar.setProgress(red);
         greenSeekBar.setProgress(green);
         blueSeekBar.setProgress(blue);
@@ -94,7 +116,10 @@ public class FaceController implements SeekBar.OnSeekBarChangeListener, RadioGro
         fv.invalidate();
     }
 
-
+    /**
+     * Sets the hair style based on the given int option, 1-Afro, 2-Three-Strand, 3-Box Cut
+     * @param styleIndex
+     */
     public void setHairStyle(int styleIndex) {
         fv.getFaceModel().setHairStyle(styleIndex);
         fv.invalidate();
@@ -113,34 +138,25 @@ public class FaceController implements SeekBar.OnSeekBarChangeListener, RadioGro
     }
 
     /**
-     * Creates the ArrayList of Spinner then assigns it to what happens when a Spinner option is selected
-      * @param hairStyleSpinner
+     * Determines which option was selected in the Spinner and sets the hair style to such
      */
-    public void setupHairStyleSpinner(Spinner hairStyleSpinner) {
-        ArrayList<String> style = new ArrayList<>();
-        style.add("Afro");
-        style.add("Three-Strand");
-        style.add("Box Cut");
+    public void onItemSelected(AdapterView<?> parent, View view, int pos, long id) {
+        // An item is selected. You can retrieve the selected item using
+        String item = (String) parent.getItemAtPosition(pos);
 
-        ArrayAdapter<String> adapter = new ArrayAdapter<>(myActivity, android.R.layout.simple_spinner_item, style);
-        adapter.setDropDownViewResource(android.R.layout.select_dialog_singlechoice);
-        hairStyleSpinner.setAdapter(adapter);
-
-        // Set the randomly selected item as the selected item in the spinner
-        hairStyleSpinner.setSelection(fv.getFaceModel().hairStyle);
-        hairStyleSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
-            @Override
-            public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
-                String item = adapterView.getItemAtPosition(i).toString();
-                setHairStyle(i);
-                fv.invalidate();
-            }
-
-            @Override
-            public void onNothingSelected(AdapterView<?> adapterView) {
-                // nothing
-            }
-        });
+        if (item.equals("Afro")) {
+            setHairStyle(1);
+        }
+        else if (item.equals("Three-Strand")) {
+            setHairStyle(2);
+        }
+        else if (item.equals("Box Cut")) {
+            setHairStyle(3);
+        }
+        fv.invalidate();
     }
 
-}
+    public void onNothingSelected(AdapterView<?> parent) {
+        // nothing
+    }
+} // FaceController

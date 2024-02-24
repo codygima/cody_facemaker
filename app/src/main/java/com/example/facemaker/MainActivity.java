@@ -2,18 +2,18 @@ package com.example.facemaker;
 
 import androidx.appcompat.app.AppCompatActivity;
 
-import android.graphics.Color;
+
 import android.os.Bundle;
-import android.view.View;
-import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.RadioGroup;
 import android.widget.SeekBar;
 import android.widget.Spinner;
 
-import java.util.ArrayList;
-
+/***
+ * @author Cody Gima
+ * @version 2/24/23
+ */
 public class MainActivity extends AppCompatActivity {
 
     @Override
@@ -44,9 +44,25 @@ public class MainActivity extends AppCompatActivity {
         Button randomFaceButton = findViewById(R.id.randomFaceButton);
         randomFaceButton.setOnClickListener(fc);
 
+        /**
+         External Citation
+         Date: 22 February 2024
+         Problem: Needed to add a spinner and how to implement which option was selected.
+         Resource:
+         https://developer.android.com/develop/ui/views/components/spinner
+         Solution: I used Android Studio's example code to help add the spinner
+         */
+        Spinner spinner = findViewById(R.id.hairStyleSpinner);
+        // Create an ArrayAdapter using the string array and a default spinner layout.
+        ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource(this, R.array.hairStylesArray, android.R.layout.simple_spinner_item);
+        // Specify the layout to use when the list of choices appears.
+        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        // Apply the adapter to the spinner.
+        spinner.setAdapter(adapter);
+
         // finds the spinner and sets it up
-        Spinner hairStyleSpinner = findViewById(R.id.hairStyleSpinner);
-        fc.setupHairStyleSpinner(hairStyleSpinner);
+        Spinner styleSpinner = findViewById(R.id.hairStyleSpinner);
+        styleSpinner.setOnItemSelectedListener(fc);
     }
 
 }

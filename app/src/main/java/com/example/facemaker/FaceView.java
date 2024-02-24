@@ -6,14 +6,13 @@ import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
 import android.util.AttributeSet;
-import android.util.Log;
 import android.view.SurfaceView;
 import android.widget.RadioGroup;
 import android.widget.SeekBar;
 
 /***
  * @author Cody Gima
- * @version 2/14/23
+ * @version 2/24/23
  */
 public class FaceView extends SurfaceView {
     // instance variables
@@ -38,7 +37,6 @@ public class FaceView extends SurfaceView {
     @Override
     public void onDraw(Canvas c) {
         drawFace(c);
-
     }
 
     /**
